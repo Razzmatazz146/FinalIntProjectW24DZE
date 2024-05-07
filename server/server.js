@@ -9,7 +9,7 @@ app.use(cors());
 app.use(morgan('tiny'));
 app.use(express.json());
 
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
     res.send('Hello World')
 })
 
@@ -22,7 +22,7 @@ app.post('/graphs/generate', (req, res) => {
     // TODO: Use Python code to query the database and generate the graph
 
     // TODO: Show image of graph before downloading
-    
+
 });
 
 // Route for getting graph samples
@@ -62,24 +62,10 @@ app.post('/test-graph', (req, res) => {
             return res.status(500).json({ message: 'Error generating graph' });
         }
 
-        // Assuming the Python script saves the graph as an image in the server's file storage
-        const imagePath = path.join(__dirname, 'fake_graph.png');
+        const imagePath = 'C:/Users/adm1/OneDrive - Champlain Regional College/Documents/Git Repos/FinalIntProjectW24DZE/server/fake_graph.png';
 
-        // Check if the image file exists
-        fs.access(imagePath, fs.constants.F_OK, (err) => {
-            if (err) {
-                return res.status(404).json({ message: 'Image not found' });
-            }
-
-            // Send the image file in the response
-            res.sendFile(imagePath, (err) => {
-                if (err) {
-                    res.status(500).json({ message: 'Error sending image' });
-                }
-
-                // TODO: Manage and cleanup of the server’s file storage
-            });
-        });
+        // Send the image file in the response
+        res.sendFile(imagePath)
     });
 });
 
