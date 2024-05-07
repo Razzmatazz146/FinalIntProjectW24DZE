@@ -1,0 +1,19 @@
+.main-menu {
+    position: relative;
+}
+
+.background-image {
+    background-image: url('./assets/background.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.background-image h1 {
+    color: #fff;
+}
