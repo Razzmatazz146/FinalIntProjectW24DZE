@@ -21,19 +21,20 @@ app.post('/graphs/generate', (req, res) => {
 
     // TODO: Use Python code to query the database and generate the graph
 
-    // TODO: Send back the resulting graph as a file to the client
-
-    // TODO: Manage and cleanup of the server’s file storage
+    // TODO: Show image of graph before downloading
+    
 });
 
 // Route for getting graph samples
 app.get('/graphs', (req, res) => {
-    // TODO: Return a list of graph types with sample images
+    // TODO: Return a list of graphs with sample images
 });
 
 // Route for downloading graphs
 app.get('/graphs/download', (req, res) => {
-    // TODO: Return a list of countries
+    // TODO: Return image of graph for user to download
+
+    // TODO: Manage and cleanup of the server’s file storage
 });
 
 
