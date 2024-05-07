@@ -4,6 +4,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const { connect } = require('./database/database');
 const { spawn } = require('child_process');
+const path = require('path');
 
 app.use(cors());
 app.use(morgan('tiny'));
@@ -51,21 +52,31 @@ app.post('/test-graph', (req, res) => {
     // Call Python script to generate graph
     const python = spawn('python', ['./fake_graph.py', graphType, countriesStr, extraParamsStr]);
 
+    python.on('stderr', function (data) {
+        console.log('data: ', data);
+    })
+
+    python.on('stdout', function (data) {
+        console.log('data: ', data);
+    })
+
+
     python.on('error', (err) => {
         console.error(`Failed to start Python script: ${err.message}`);
         return res.status(500).json({ message: 'Error generating graph' });
     });
 
     python.on('close', (code) => {
+        console.log('code: ', code);
         if (code !== 0) {
             console.error(`Python script exited with code ${code}`);
             return res.status(500).json({ message: 'Error generating graph' });
         }
 
-        const imagePath = 'C:/Users/adm1/OneDrive - Champlain Regional College/Documents/Git Repos/FinalIntProjectW24DZE/server/fake_graph.png';
+        const imagePath = path.join('images','fake_graph.png');
 
         // Send the image file in the response
-        res.sendFile(imagePath)
+        res.sendFile(imagePath, { root: __dirname})
     });
 });
 
