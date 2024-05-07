@@ -15,7 +15,7 @@ app.get('/', function(req, res) {
 
 
 // Route for generating a graph
-app.post('/generate-graph', (req, res) => {
+app.post('/graphs/generate', (req, res) => {
     // Extract parameters from request body
     const { graphType, countries, extraParams } = req.body;
 
@@ -26,20 +26,16 @@ app.post('/generate-graph', (req, res) => {
     // TODO: Manage and cleanup of the server’s file storage
 });
 
-// Route for getting graph types
-app.get('/graph-types', (req, res) => {
+// Route for getting graph samples
+app.get('/graphs', (req, res) => {
     // TODO: Return a list of graph types with sample images
 });
 
-// Route for getting countries
-app.get('/countries', (req, res) => {
+// Route for downloading graphs
+app.get('/graphs/download', (req, res) => {
     // TODO: Return a list of countries
 });
 
-// Route for getting other parameters
-app.get('/parameters', (req, res) => {
-    // TODO: Return a list of other parameters (ex: date range, energy type, etc.)
-});
 
 // Route for proof of concept
 app.post('/test-graph', (req, res) => {
