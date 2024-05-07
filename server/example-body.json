@@ -1,0 +1,9 @@
+{
+    "graphType" : "line",
+    "countries" : ["Canada", "USA"],
+    "extraParams" : {
+        "startYear" : 2001,
+        "endYear" : 2010,
+        "energyType" : ["Gas", "Oil", "Coal"]
+    }
+}
