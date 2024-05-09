@@ -28,6 +28,7 @@ select {
   border-radius: 5px;
   border: 1px solid #ccc;
   background-color: #fff;
+  color: black;
 }
 
 .generate-button {
