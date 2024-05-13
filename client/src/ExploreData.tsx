@@ -31,22 +31,22 @@ const ExploreDataPage: React.FC = () => {
             <div className="explore-data-page">
                 <div className="box">
                     <h2>Fossil Energy Consumption</h2>
-                    <div className="picture-placeholder"></div>
+                    <div className="graph1-picture-placeholder"></div>
                     <button onClick={graph1Select}>Select</button>
                 </div>
                 <div className="box">
                     <h2>Sustainable Energy Consumption</h2>
-                    <div className="picture-placeholder"></div>
+                    <div className="graph2-picture-placeholder"></div>
                     <button onClick={graph2Select}>Select</button>
                 </div>
                 <div className="box">
                     <h2>Canada and Top 5 Countries</h2>
-                    <div className="picture-placeholder"></div>
+                    <div className="graph3-picture-placeholder"></div>
                     <button onClick={graph3Select}>Select</button>
                 </div>
                 <div className="box">
                     <h2>Renewable Electricity</h2>
-                    <div className="picture-placeholder"></div>
+                    <div className="graph4-picture-placeholder"></div>
                     <button onClick={graph4Select}>Select</button>
                 </div>
             </div>
