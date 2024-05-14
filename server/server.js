@@ -6,6 +6,7 @@ const { connect } = require('./database/database');
 const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+const mongoose = require('mongoose');
 
 app.use(cors());
 app.use(morgan('tiny'));
@@ -82,9 +83,22 @@ app.post('/generate-graph', async (req, res) => {
     });
 });
 
-app.get('/countries', (req, res) => {
-    // TODO: Return array of countries from DB
-})
+// Assuming you have a Mongoose model for your collection
+const OwidEnergy = mongoose.model('OwidEnergy', new mongoose.Schema({}), 'OwidEnergy');
+
+app.get('/countries', async (req, res) => {
+    try {
+        // Query the database for distinct country names
+        const countries = await OwidEnergy.distinct('country');
+        console.log('countries: ', countries);
+        
+        // Send the array of country names in the response
+        res.json(countries);
+    } catch (err) {
+        console.error(`Failed to get countries: ${err.message}`);
+        res.status(500).json({ message: 'Error getting countries' });
+    }
+});
 
 
 // Route for proof of concept
