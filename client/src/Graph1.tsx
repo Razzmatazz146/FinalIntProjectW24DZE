@@ -30,6 +30,10 @@ const Graph1: React.FC = () => {
         throw new Error('Failed to generate graph');
       }
 
+      const blob = await response.blob();
+
+      localStorage.setItem('graphImage', URL.createObjectURL(blob));
+
       navigate('/graph-generated');
     } catch (error) {
       console.error('Error generating graph:', error);
@@ -63,7 +67,6 @@ const Graph1: React.FC = () => {
       <button className="generate-button" onClick={generateGraph}>
         Generate Graph
       </button>
-
     </div>
   );
 };
