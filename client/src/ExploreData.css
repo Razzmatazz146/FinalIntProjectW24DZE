@@ -20,38 +20,38 @@ h2 {
 }
 
 .graph1-picture-placeholder {
-    width: 300px;
-    height: 300px;
+    width: 200px;
+    height: 200px;
     background-color: #ccc;
     border-radius: 5px;
-    margin: 10px auto;
+    margin: 5px auto;
     background-image: url('./assets/background.jpg');
 }
 
 .graph2-picture-placeholder {
-    width: 300px;
-    height: 300px;
+    width: 200px;
+    height: 200px;
     background-color: #ccc;
     border-radius: 5px;
-    margin: 10px auto;
+    margin: 5px auto;
     background-image: url('./assets/background.jpg');
 }
 
 .graph3-picture-placeholder {
-    width: 300px;
-    height: 300px;
+    width: 200px;
+    height: 200px;
     background-color: #ccc;
     border-radius: 5px;
-    margin: 10px auto;
+    margin: 5px auto;
     background-image: url('./assets/background.jpg');
 }
 
 .graph4-picture-placeholder {
-    width: 300px;
-    height: 300px;
+    width: 200px;
+    height: 200px;
     background-color: #ccc;
     border-radius: 5px;
-    margin: 10px auto;
+    margin: 5px auto;
     background-image: url('./assets/background.jpg');
 }
 
