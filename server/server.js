@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const { connect } = require('./database/database');
 const { spawn } = require('child_process');
 const path = require('path');
+const fs = require('fs');
 
 app.use(cors());
 app.use(morgan('tiny'));
@@ -16,14 +17,12 @@ app.get('/', function (req, res) {
 
 
 // Route for generating a graph
-app.post('/generate-graph', (req, res) => {
+app.post('/generate-graph', async (req, res) => {
     // Extract parameter strings from request body
     // graphType : line, pie, bar
     // countries : array of country names
     // extraParams : array of extra parameters to pass to graphing library
     const { graphType, countries, extraParams } = req.body;
-
-    // TODO: Use Python code to query the database and generate the graph
 
     // Convert countries and extraParams to strings
     const graphTypeStr = JSON.stringify(graphType)
@@ -50,21 +49,37 @@ app.post('/generate-graph', (req, res) => {
         return res.status(500).json({ message: 'Error generating graph' });
     });
 
+    const file_name = 'fake_graph.png';
+
+    const imagePath = path.join('images', file_name);
+
     python.on('close', (code) => {
         console.log('code: ', code);
         if (code !== 0) {
             console.error(`Python script exited with code ${code}`);
             return res.status(500).json({ message: 'Error generating graph' });
         }
-        const file_name = 'fake_graph.png';
-
-        const imagePath = path.join('images', file_name);
+        
 
         // Send the image file in the response
-        res.sendFile(imagePath, { root: __dirname })
+        res.sendFile(imagePath, { root: __dirname }, async (err) => {
+            if (err) {
+                console.error(`Failed to send image file: ${err.message}`);
+                return res.status(500).json({ message: 'Error sending image' });
+            } else {
+                console.log('Image file sent');
+                
+                // Delete the image file after sending
+                fs.unlink(imagePath, (err) => {
+                    if (err) {
+                        console.error(`Failed to delete image file: ${err.message}`);
+                    } else {
+                        console.log('Image file deleted');
+                    }
+                });
+            }
+        });
     });
-
-    // TODO: Clean-up after sending
 });
 
 app.get('/countries', (req, res) => {
