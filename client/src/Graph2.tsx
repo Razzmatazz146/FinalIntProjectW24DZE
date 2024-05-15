@@ -9,6 +9,15 @@ const Graph2: React.FC = () => {
   const [error, setError] = useState<string>('');
   const [countries, setCountries] = useState<string[]>([]);
 
+  const generateYearsArray = () => {
+    const currentYear = new Date().getFullYear();
+    const years = [];
+    for (let year = 1900; year <= currentYear; year++) {
+      years.push(year.toString());
+    }
+    return years;
+  };
+
   useEffect(() => {
     fetchCountries();
   }, []);
@@ -99,9 +108,9 @@ const Graph2: React.FC = () => {
         <label htmlFor="year">Select Year:</label>
         <select id="year" name="year" value={selectedYear} onChange={handleYearChange}>
           <option value="">Select Year</option>
-          <option value="2022">2022</option>
-          <option value="2023">2023</option>
-          <option value="2024">2024</option>
+          {generateYearsArray().map(year => (
+            <option key={year} value={year}>{year}</option>
+          ))}
         </select>
       </div>
       {error && <p className="error-message">{error}</p>}
