@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Graph1.css';
 
@@ -6,6 +6,24 @@ const Graph1: React.FC = () => {
   const navigate = useNavigate();
   const [selectedCountry, setSelectedCountry] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const [countries, setCountries] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetchCountries();
+  }, []);
+
+  const fetchCountries = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/countries');
+      if (!response.ok) {
+        throw new Error('Failed to fetch countries');
+      }
+      const data = await response.json();
+      setCountries(data);
+    } catch (error) {
+      console.error('Error fetching countries:', error);
+    }
+  };
 
   const generateGraph = async () => {
     try {
@@ -37,7 +55,6 @@ const Graph1: React.FC = () => {
       navigate('/graph-generated');
     } catch (error) {
       console.error('Error generating graph:', error);
-      // Handle error
     }
   };
 
@@ -58,11 +75,11 @@ const Graph1: React.FC = () => {
         <label htmlFor="country">Select a Country:</label>
         <select id="country" name="country" value={selectedCountry} onChange={handleCountryChange}>
           <option value="">Select Country</option>
-          <option value="Country 1">Country 1</option>
-          <option value="Country 2">Country 2</option>
-          <option value="Country 3">Country 3</option>
+          {countries.map(country => (
+            <option key={country} value={country}>{country}</option>
+          ))}
         </select>
-        {error && <p className="error-message">{error}</p>} {/* Display error message */}
+        {error && <p className="error-message">{error}</p>}
       </div>
       <button className="generate-button" onClick={generateGraph}>
         Generate Graph
