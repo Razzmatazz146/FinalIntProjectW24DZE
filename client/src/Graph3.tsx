@@ -1,16 +1,51 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Graph3.css';
 
 const Graph3: React.FC = () => {
   const navigate = useNavigate();
+  const [selectedParameter, setSelectedParameter] = useState<string>('');
+  const [error, setError] = useState<string>('');
 
-  const GraphGenerated = () => {
-    navigate('/graph-generated');
+  const generateGraph = async () => {
+    try {
+      if (!selectedParameter) {
+        setError('Please select a parameter.');
+        return;
+      }
+
+      const response = await fetch('http://localhost:8080/generate-graph', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          graphType: 'line',
+          parameter: selectedParameter
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate graph');
+      }
+
+      const blob = await response.blob();
+
+      localStorage.setItem('graphImage', URL.createObjectURL(blob));
+
+      navigate('/graph-generated');
+    } catch (error) {
+      console.error('Error generating graph:', error);
+    }
   };
 
   const goBack = () => {
     window.history.back();
+  };
+
+  const handleParameterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedParameter(event.target.value);
+    setError('');
   };
 
   return (
@@ -19,13 +54,15 @@ const Graph3: React.FC = () => {
       <h1>Canada and Top 5 Countries</h1>
       <div className="input-container">
         <label htmlFor="parameter">Select Parameter:</label>
-        <select id="parameter" name="parameter">
+        <select id="parameter" name="parameter" value={selectedParameter} onChange={handleParameterChange}>
+          <option value="">Select Parameter</option>
           <option value="greenhouse_gas_emissions">Greenhouse Gas Emissions</option>
           <option value="population">Population</option>
           <option value="gdp">GDP</option>
         </select>
       </div>
-      <button className="generate-button" onClick={GraphGenerated}>Generate Graph</button>
+      {error && <p className="error-message">{error}</p>} {/* Display error message */}
+      <button className="generate-button" onClick={generateGraph}>Generate Graph</button>
     </div>
   );
 };

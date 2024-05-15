@@ -49,7 +49,7 @@ const Graph2: React.FC = () => {
         },
         body: JSON.stringify({
           graphType: 'line',
-          countries: selectedCountries.filter(country => country !== ''), // Remove empty strings
+          countries: selectedCountries.filter(country => country !== ''),
           extraParams: {
             year: selectedYear
           }
