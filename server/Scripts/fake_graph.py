@@ -18,7 +18,7 @@ try:
     print('dfsffs')
 
     # Save the figure as an image
-    plt.savefig('../images/graph.png')
+    plt.savefig('./server/images/graph.png')
 except Exception as e:
     print(e)
 
