@@ -33,16 +33,46 @@ app.post('/generate-graph', async (req, res) => {
     console.log("Countries: ", countriesStr);
     console.log("Extras: ", extraParamsStr);
 
+    let scriptPath;
+    switch (graphType) {
+        case 'test':
+            scriptPath = './Scripts/fake_graph.py';
+            break;
+        case 'graph1':
+            scriptPath = './Scripts/generate_fossil_energy_graph.py';
+            break;
+        case 'graph2':
+            scriptPath = './Scripts/generate_sustainable_energy_pie_charts.py';
+            break;
+        case 'graph3':
+            scriptPath = './Scripts/generate_top5_bar_graph.py';
+            break;
+        case 'graph4':
+            scriptPath = './Scripts/generate_electricity_generation_stacked_graph.py';
+            break;
+        default:
+            return res.status(400).json({ message: 'Invalid graphType' });
+    }
+
     // Call Python script to generate graph
-    const python = spawn('python', ['./fake_graph.py', graphTypeStr, countriesStr, extraParamsStr]);
+    let args = [scriptPath];
+    if (graphType === 'graph1') {
+        console.log(countriesStr);
+        args.push(countriesStr);
+    } else if (graphType === 'graph2') {
+        args.push(extraParamsStr, countriesStr);
+    } else if (graphType === 'graph3') {
+        args.push(extraParams);
+    } else if (graphType === 'graph4') {
+        args.push(extraParams);
+    }
 
-    python.on('stderr', function (data) {
-        console.log('data: ', data);
-    })
+    // Call Python script to generate graph
+    const python = spawn('python', args);
 
-    python.on('stdout', function (data) {
-        console.log('data: ', data);
-    })
+    python.stdout.on('data', (data) => {
+        console.log(`stdout: ${data}`);
+    });
 
 
     python.on('error', (err) => {
@@ -50,7 +80,7 @@ app.post('/generate-graph', async (req, res) => {
         return res.status(500).json({ message: 'Error generating graph' });
     });
 
-    const file_name = 'fake_graph.png';
+    const file_name = 'graph.png';
 
     const imagePath = path.join('images', file_name);
 

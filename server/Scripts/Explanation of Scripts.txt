@@ -1,0 +1,292 @@
+Fossil Energy Graph:
+
+
+1. Import Libraries:
+
+sys for command-line argument handling.
+
+pandas for reading and manipulating data.
+
+matplotlib.pyplot for creating the graph.
+
+
+2. Function generate_fossil_energy_graph:
+
+Loads the energy data and country list from the CSV files.
+
+Checks if the provided country name exists in the country list.
+
+Filters the energy data for the specified country.
+
+Extracts the years, oil, gas, and coal consumption data.
+
+Plots the data and saves the graph as an image file.
+
+
+3. Command-Line Argument Handling:
+
+Ensures the script is run with exactly one argument (the country name).
+
+Calls the generate_fossil_energy_graph function with the provided country name.
+
+
+
+
+Sustainable Energy Pie Charts:
+
+
+1. Import Libraries:
+
+sys for command-line argument handling.
+
+pandas for reading and manipulating data.
+
+matplotlib.pyplot for creating the graph.
+
+matplotlib.patches is used to create custom legend elements
+
+
+2. Loading the Datasets and Validation:
+ 
+The script reads two CSV files: owid-energy-data.csv (containing energy data) and countries.csv (containing a list of valid countries).
+
+The script checks if the provided countries exist in the countries.csv file. If a country is not found, it prints an error message and exits the function.
+
+
+3. Filtering by Year: 
+
+The script filters the energy_data DataFrame to include only the rows for the specified year. If no data is found for that year, it prints an error message and exits the function.
+
+
+4. Creating Subplots, Ensuring Iterable axs and Defining Colors:
+
+Creating Subplots:
+The script creates a figure with a number of subplots equal to the number of countries. The subplots are arranged in a single row. The size of the figure is adjusted based on the number of countries.
+
+Ensuring Iterable axs:
+If there is only one country, axs is converted to a list to ensure it can be iterated over.
+
+Color Palette:
+A dictionary mapping energy types to specific colors is created. This ensures consistency in color usage across all pie charts.
+
+
+5. Generating Pie Charts: 
+
+Filtering Data for Each Country: 
+For each country, the script filters the year_data DataFrame to include only the rows for that country. If no data is found for a country, it prints an error message and exits the function.
+
+Extracting Data: 
+The script extracts the consumption values for hydro, solar, biofuel, and wind energy from the filtered data.
+
+Plotting Pie Charts: 
+The script generates a pie chart for each country using the extracted data and the specified color palette. The country name is set as the title for each subplot.
+
+
+6. Adding Legend and Title:
+
+Adding Legend: 
+The script creates custom legend elements using the color_palette and adds them to the figure. The loc parameter specifies the legend location, ncol=1 ensures the items are stacked vertically, and the title parameter adds a title to the legend.
+
+Setting Main Title: 
+The script sets a main title for the entire figure using plt.suptitle.
+
+Adjusting Layout: 
+The plt.tight_layout method is used to adjust the layout, ensuring there is enough space for the main title and legend.
+
+Saving and Displaying the Figure: 
+The script saves the figure as a PNG file and displays it.
+
+
+7. Main Script Execution:
+
+Argument Parsing: 
+The script checks the number of arguments provided. If the number of arguments is not between 3 and 6, it prints the usage instructions and exits.
+
+Calling the Function: 
+The script extracts the year and countries from the command-line arguments and calls the generate_sustainable_energy_pie_charts function with these arguments.
+
+
+
+
+Top 5 Countries Bar Graph:
+
+
+1. Import Libraries:
+
+sys for command-line argument handling.
+
+pandas for reading and manipulating data.
+
+matplotlib.pyplot for creating the graph.
+
+numpy for numerical operations.
+
+
+2. Function Definition and Loading Dataset:
+
+generate_top5_bar_graph(criteria):
+Takes one argument criteria to specify the type of data to be visualized.
+
+data = pd.read_csv('owid-energy-data_A_S.csv'): 
+Loads the main dataset.
+
+valid_countries = pd.read_csv('countries.csv')['country'].tolist(): 
+Loads the list of valid countries.
+
+
+3. Filtering Data:
+
+data = data[data['country'].isin(valid_countries)]: 
+Filters the data to include only valid countries.
+
+data_2020 = data[data['year'] == 2020]: 
+Filters the data for the year 2020.
+
+
+4. Criteria Validation:
+
+Maps criteria to respective column names.
+
+Checks if the provided criteria is valid.
+
+
+5. Data Preparation:
+
+Filters and cleans data based on the selected criteria.
+
+Converts GDP values from scientific notation to regular numbers if needed.
+
+
+6. Top 5 Countries + Canada:
+
+Identifies the top 5 countries excluding Canada based on the selected criteria for 2020.
+
+Includes Canada in the list of countries for comparison.
+
+
+7. Historical Data:
+
+Filters data for the past 10 years (2011-2020) for the selected countries.
+
+Pivots the data to have countries as columns and years as rows.
+
+Sorts columns by 2020 values in descending order.
+
+
+8. Plotting:
+
+Sets up the figure and axis for the bar graph.
+
+Defines bar width and positions with gaps between groups of bars.
+
+Customizes bar colors.
+
+Plots bars for each country.
+
+Highlights the year with maximum values (2020) with annotations.
+
+Sets axis labels and title based on the selected criteria.
+
+Adds a legend and grid to the plot.
+
+Adjusts the layout for better appearance.
+
+
+9. Saving and Showing Plot:
+
+Saves the plot as a PNG file with a descriptive filename.
+
+Displays the plot.
+
+
+10. Main Script Execution:
+
+Checks if the correct number of command-line arguments is provided.
+
+Calls the generate_top5_bar_graph function with the specified criteria.
+
+
+
+
+Electricity Generation Stacked Graph:
+
+
+1. Import Libraries:
+
+sys for command-line argument handling.
+
+pandas for reading and manipulating data.
+
+matplotlib.pyplot for creating the graph.
+
+numpy for numerical operations.
+
+
+2. Defining the Function:
+
+The function takes a year as an input and generates the stacked bar chart for that year.
+
+
+3. Loading and Filtering the Dataset:
+
+The dataset containing energy data is loaded.
+
+A list of valid countries is loaded from countries.csv.
+
+The data is filtered to include only rows where the country is in the list of valid countries.
+
+The data is filtered to include only rows for the specified year.
+
+
+4. Selecting Relevant Columns:
+
+The relevant columns for different electricity generation sources are selected.
+
+Rows with any missing values in these columns are dropped.
+
+
+5. Calculating Total Electricity Generation:
+
+A new column, total_generation, is added to the DataFrame, representing the total electricity generation for each country by summing up the values of the selected columns.
+
+
+6. Selecting the Top 10 Countries:
+
+The data is sorted by total_generation in descending order.
+
+The top 10 countries with the highest total electricity generation are selected.
+
+The total_generation column is dropped as it’s no longer needed for plotting.
+
+
+7. Setting Index and Renaming Columns:
+
+The index of the DataFrame is set to country for easier plotting.
+
+Custom colors are defined for each electricity source.
+
+A dictionary is created to map the original column names to custom legend names.
+
+The columns in the DataFrame are renamed using the custom legend names.
+
+
+8. Plotting the Data:
+
+The DataFrame is plotted as a stacked bar graph using the custom colors.
+
+Titles and labels for the plot are added.
+
+A legend with a title is added.
+
+Grid lines are enabled for better readability.
+
+The layout is adjusted to ensure everything fits well.
+
+The plot is saved as a PNG file and displayed.
+
+
+9. Main Script Execution:
+
+The script checks if the correct number of command-line arguments is provided.
+
+If the correct number of arguments is provided, the year is extracted from the command-line arguments and passed to the function generate_electricity_generation_stacked_graph.   
