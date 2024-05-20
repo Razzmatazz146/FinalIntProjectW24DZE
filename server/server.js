@@ -57,8 +57,8 @@ app.post('/generate-graph', async (req, res) => {
     // Call Python script to generate graph
     let args = [scriptPath];
     if (graphType === 'graph1') {
-        console.log(countriesStr);
-        args.push(countriesStr);
+        console.log(countries);
+        args.push(countries);
     } else if (graphType === 'graph2') {
         args.push(extraParamsStr, countriesStr);
     } else if (graphType === 'graph3') {

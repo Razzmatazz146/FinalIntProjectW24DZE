@@ -1,27 +1,26 @@
 import sys
 import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
+from pymongo import MongoClient
 
 def generate_electricity_generation_stacked_graph(year):
-    # Load the dataset
-    data = pd.read_csv('owid-energy-data_A_S.csv')
-    
-    # Load the list of valid countries
-    valid_countries = pd.read_csv('countries.csv')['country'].tolist()
-    
-    # Filter data to include only valid countries
-    data = data[data['country'].isin(valid_countries)]
+    # Connect to MongoDB
+    client = MongoClient('localhost', 27017)
+    db = client.energy_database
 
-    # Filter data for the specified year
-    data_year = data[data['year'] == year]
+    # Get the energy data for the specified year
+    energy_data = db.energy_data.find({'year': year})
+
+    # Convert MongoDB cursor to DataFrame
+    energy_df = pd.DataFrame(list(energy_data))
 
     # Select relevant columns for electricity generation sources
     electricity_columns = ['country', 'hydro_electricity', 'solar_electricity', 
                            'biofuel_electricity', 'wind_electricity', 'oil_electricity', 
                            'gas_electricity', 'coal_electricity']
 
-    data_year = data_year[electricity_columns].dropna()
+    # Filter out NaN values and select relevant columns
+    data_year = energy_df[electricity_columns].dropna()
 
     # Calculate total electricity generation for each country
     data_year['total_generation'] = data_year[electricity_columns[1:]].sum(axis=1)
@@ -70,8 +69,7 @@ def generate_electricity_generation_stacked_graph(year):
     plt.tight_layout(rect=[0, 0, 0.85, 1])
 
     # Save the plot as a PNG file
-    plt.savefig('../images/graph.png')
-    plt.show()
+    plt.savefig('./images/graph.png')
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:

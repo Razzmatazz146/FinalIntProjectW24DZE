@@ -2,14 +2,24 @@ import sys
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import os
+from pymongo import MongoClient
 
 def generate_top5_bar_graph(criteria):
-    # Load the dataset
-    data = pd.read_csv('owid-energy-data_A_S.csv')
-    
-    # Load the list of valid countries
-    valid_countries = pd.read_csv('countries.csv')['country'].tolist()
-    
+    # Connect to MongoDB
+    db_name = os.getenv('DB')
+    db_url = os.getenv('URL')
+    client = MongoClient(db_url, 27017)
+    db = client.db_name
+
+    # Load the list of valid countries from the 'countries_list' collection
+    countries_data = db.countries_list.find({}, {'_id': 0, 'country': 1})
+    valid_countries = [country['country'] for country in countries_data]
+
+    # Load the data from the 'energy_data' collection
+    energy_data_cursor = db.energy_data.find({}, {'_id': 0, 'country': 1, 'year': 1, criteria: 1})
+    data = pd.DataFrame(list(energy_data_cursor))
+
     # Filter data to include only valid countries
     data = data[data['country'].isin(valid_countries)]
 
@@ -34,9 +44,13 @@ def generate_top5_bar_graph(criteria):
     # Select relevant columns and drop rows with missing values
     data_2020 = data_2020[['country', criteria_column]].dropna()
 
+    if data_2020.empty:
+        print(f"No data available for the criteria '{criteria}' in 2020.")
+        return
+
     # Convert GDP values in scientific notation to regular numbers
     if criteria == 'gdp':
-        data [criteria_column] = pd.to_numeric(data [criteria_column], errors='coerce')
+        data[criteria_column] = pd.to_numeric(data[criteria_column], errors='coerce')
 
     # Get the top 5 countries excluding Canada
     top_5_countries = data_2020[data_2020['country'] != 'Canada'].nlargest(5, criteria_column)['country'].tolist()
@@ -46,6 +60,10 @@ def generate_top5_bar_graph(criteria):
 
     # Filter data for the past 10 years for the selected countries, stopping at 2020
     data_past_10_years = data[(data['year'] >= 2011) & (data['year'] <= 2020) & (data['country'].isin(countries_to_compare))]
+
+    if data_past_10_years.empty:
+        print(f"No data available for the selected countries in the past 10 years.")
+        return
 
     # Pivot data to have countries as columns and years as rows
     pivot_data = data_past_10_years.pivot(index='year', columns='country', values=criteria_column)
@@ -62,7 +80,7 @@ def generate_top5_bar_graph(criteria):
     years = pivot_data.index
     positions = np.arange(len(years)) * group_width  # Positions with gaps
 
-     # Custom colors for the bars
+    # Custom colors for the bars
     colors = ['purple', 'blue', 'lightblue', 'cyan', 'green', 'yellow']
 
     for i, country in enumerate(sorted_columns):
@@ -96,8 +114,7 @@ def generate_top5_bar_graph(criteria):
     plt.tight_layout(rect=[0, 0, 0.85, 1])
 
     # Save the plot as a PNG file
-    plt.savefig('../images/graph.png')
-    plt.show()
+    plt.savefig('./images/graph.png')
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -107,4 +124,3 @@ if __name__ == "__main__":
 
     criteria = sys.argv[1]
     generate_top5_bar_graph(criteria)
-

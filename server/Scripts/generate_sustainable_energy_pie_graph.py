@@ -2,20 +2,28 @@ import sys
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
+from pymongo import MongoClient
 
-def generate_sustainable_energy_pie_charts(year, countries):
-    # Load the datasets
-    energy_data = pd.read_csv('owid-energy-data_A_S.csv')
-    countries_data = pd.read_csv('countries.csv')
+def generate_sustainable_energy_pie_graph(year, countries):
+    # Connect to MongoDB
+    client = MongoClient('localhost', 27017)
+    db = client.energy_database
 
-    # Check if the provided countries exist in the countries.csv
+    # Load the list of valid countries from the 'countries_list' collection
+    countries_data = db.countries_list.find({}, {'_id': 0, 'country': 1})
+    countries_list = [country['country'] for country in countries_data]
+
+    # Check if the provided countries exist in the countries_list
     for country in countries:
-        if country not in countries_data['country'].values:
+        if country not in countries_list:
             print(f"Country '{country}' not found in the countries list.")
             return
 
-    # Filter the data for the given year
-    year_data = energy_data[energy_data['year'] == year]
+    # Filter the data for the given year from the 'energy_data' collection
+    year_data = pd.DataFrame(list(db.energy_data.find(
+        {'year': year}, 
+        {'_id': 0, 'country': 1, 'hydro_consumption': 1, 'solar_consumption': 1, 'biofuel_consumption': 1, 'wind_consumption': 1}
+    )))
 
     if year_data.empty:
         print(f"No data available for the year '{year}' in the energy dataset.")
@@ -46,6 +54,11 @@ def generate_sustainable_energy_pie_charts(year, countries):
             print(f"No data available for '{country}' in the year '{year}'.")
             return
 
+        # Check for NaN values in the required columns
+        if country_data[['hydro_consumption', 'solar_consumption', 'biofuel_consumption', 'wind_consumption']].isnull().values.any():
+            print(f"Missing data for '{country}' in the year '{year}'. Please try again with a different country.")
+            continue
+
         # Extract the required data
         hydro_consumption = country_data['hydro_consumption'].values[0]
         solar_consumption = country_data['solar_consumption'].values[0]
@@ -53,7 +66,6 @@ def generate_sustainable_energy_pie_charts(year, countries):
         wind_consumption = country_data['wind_consumption'].values[0]
 
         # Data for the pie chart
-        energy_sources = ['Hydro', 'Solar', 'Biofuel', 'Wind']
         consumption_values = [hydro_consumption, solar_consumption, biofuel_consumption, wind_consumption]
 
         # Plot the pie chart with a specific color palette
@@ -67,15 +79,14 @@ def generate_sustainable_energy_pie_charts(year, countries):
     # Set the main title
     plt.suptitle(f'Sustainable Energy Consumption Distribution by Country ({year})', fontsize=16)
     plt.tight_layout(rect=[0, 0, 1, 0.95])
-    plt.savefig('../images/graph.png')
-    plt.show()
+    plt.savefig('./images/graph.png')
 
 if __name__ == "__main__":
     if len(sys.argv) < 3 or len(sys.argv) > 6:
-        print("Usage: python generate_sustainable_energy_pie_charts.py <year> <country1> [<country2> <country3> <country4>]")
+        print("Usage: python generate_sustainable_energy_pie_graph.py <year> <country1> [<country2> <country3> <country4>]")
         sys.exit(1)
 
     year = int(sys.argv[1])
     countries = sys.argv[2:]
 
-    generate_sustainable_energy_pie_charts(year, countries)
+    generate_sustainable_energy_pie_graph(year, countries)
