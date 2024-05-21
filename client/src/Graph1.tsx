@@ -38,7 +38,7 @@ const Graph1: React.FC = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          graphType: 'line',
+          graphType: 'graph1',
           countries: [selectedCountry],
           extraParams: {}
         })

@@ -38,7 +38,7 @@ const Graph4: React.FC = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          graphType: 'line',
+          graphType: 'graph4',
           countries: selectedCountries.filter(country => country !== '')
         })
       });

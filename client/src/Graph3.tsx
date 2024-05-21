@@ -20,7 +20,7 @@ const Graph3: React.FC = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          graphType: 'line',
+          graphType: 'graph3',
           parameter: selectedParameter
         })
       });
