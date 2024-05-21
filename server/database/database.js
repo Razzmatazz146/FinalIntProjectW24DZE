@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 // Connection URL
-const databaseName = 'PowerStatsDB'
-const url = `mongodb://127.0.0.1:27017/${databaseName}`; // edit this
+const databaseName = process.env.DB
+const url = 'mongodb+srv://razzmatazz:z2Upc12FpaZMsxuo@energydata.l65g1qm.mongodb.net/PowerStatsDB' // edit this
 
 async function connect() {
     // Use connect method to connect to the server
