@@ -1,16 +1,22 @@
 import sys
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
+from dotenv import load_dotenv
 from matplotlib.patches import Patch
 from pymongo import MongoClient
 
 def generate_sustainable_energy_pie_graph(year, countries):
     # Connect to MongoDB
-    client = MongoClient('localhost', 27017)
-    db = client.energy_database
+    load_dotenv()
+    db_name = os.getenv('DB')
+    db_url = os.getenv('URL')
+    collection_name = os.getenv('COLLECTION')
+    client = MongoClient(db_url, 27017)
+    db = client[db_name]
 
     # Load the list of valid countries from the 'countries_list' collection
-    countries_data = db.countries_list.find({}, {'_id': 0, 'country': 1})
+    countries_data = db[collection_name].find({}, {'_id': 0, 'country': 1})
     countries_list = [country['country'] for country in countries_data]
 
     # Check if the provided countries exist in the countries_list
@@ -20,7 +26,7 @@ def generate_sustainable_energy_pie_graph(year, countries):
             return
 
     # Filter the data for the given year from the 'energy_data' collection
-    year_data = pd.DataFrame(list(db.energy_data.find(
+    year_data = pd.DataFrame(list(db[collection_name].find(
         {'year': year}, 
         {'_id': 0, 'country': 1, 'hydro_consumption': 1, 'solar_consumption': 1, 'biofuel_consumption': 1, 'wind_consumption': 1}
     )))
@@ -87,6 +93,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     year = int(sys.argv[1])
-    countries = sys.argv[2:]
+    countries_str = sys.argv[2:]
+    countries = countries_str.split(',')
 
     generate_sustainable_energy_pie_graph(year, countries)

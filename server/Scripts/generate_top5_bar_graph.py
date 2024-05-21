@@ -3,21 +3,24 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import os
+from dotenv import load_dotenv
 from pymongo import MongoClient
 
 def generate_top5_bar_graph(criteria):
     # Connect to MongoDB
+    load_dotenv()
     db_name = os.getenv('DB')
     db_url = os.getenv('URL')
+    collection_name = os.getenv('COLLECTION')
     client = MongoClient(db_url, 27017)
-    db = client.db_name
+    db = client[db_name]
 
     # Load the list of valid countries from the 'countries_list' collection
-    countries_data = db.countries_list.find({}, {'_id': 0, 'country': 1})
+    countries_data = db[collection_name].find({}, {'_id': 0, 'country': 1})
     valid_countries = [country['country'] for country in countries_data]
 
     # Load the data from the 'energy_data' collection
-    energy_data_cursor = db.energy_data.find({}, {'_id': 0, 'country': 1, 'year': 1, criteria: 1})
+    energy_data_cursor = db[collection_name].find({}, {'_id': 0, 'country': 1, 'year': 1, criteria: 1})
     data = pd.DataFrame(list(energy_data_cursor))
 
     # Filter data to include only valid countries

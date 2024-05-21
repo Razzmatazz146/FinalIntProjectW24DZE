@@ -42,7 +42,7 @@ app.post('/generate-graph', async (req, res) => {
             scriptPath = './Scripts/generate_fossil_energy_graph.py';
             break;
         case 'graph2':
-            scriptPath = './Scripts/generate_sustainable_energy_pie_charts.py';
+            scriptPath = './Scripts/generate_sustainable_energy_pie_graph.py';
             break;
         case 'graph3':
             scriptPath = './Scripts/generate_top5_bar_graph.py';
@@ -60,8 +60,11 @@ app.post('/generate-graph', async (req, res) => {
         console.log(countries);
         args.push(countries);
     } else if (graphType === 'graph2') {
-        args.push(extraParamsStr, countriesStr);
+        let countriesArr = countries.join(',')
+        console.log('countriesArr: ', countriesArr);
+        args.push(extraParams, countriesArr);
     } else if (graphType === 'graph3') {
+        console.log(extraParams);
         args.push(extraParams);
     } else if (graphType === 'graph4') {
         args.push(extraParams);

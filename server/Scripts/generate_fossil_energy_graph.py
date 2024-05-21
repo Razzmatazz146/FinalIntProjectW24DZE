@@ -24,7 +24,7 @@ def generate_fossil_energy_graph(country_name):
         return
 
     # Filter the data for the given country from the 'energy_data' collection
-    country_data = pd.DataFrame(list(db.OwidEnergy.find(
+    country_data = pd.DataFrame(list(db[collection_name].find(
         {'country': country_name}, 
         {'_id': 0, 'year': 1, 'oil_consumption': 1, 'gas_consumption': 1, 'coal_consumption': 1}
     )))

@@ -1,15 +1,21 @@
 import sys
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
+from dotenv import load_dotenv
 from pymongo import MongoClient
 
 def generate_electricity_generation_stacked_graph(year):
     # Connect to MongoDB
-    client = MongoClient('localhost', 27017)
-    db = client.energy_database
+    load_dotenv()
+    db_name = os.getenv('DB')
+    db_url = os.getenv('URL')
+    collection_name = os.getenv('COLLECTION')
+    client = MongoClient(db_url, 27017)
+    db = client[db_name]
 
     # Get the energy data for the specified year
-    energy_data = db.energy_data.find({'year': year})
+    energy_data = db[collection_name].find({'year': year})
 
     # Convert MongoDB cursor to DataFrame
     energy_df = pd.DataFrame(list(energy_data))
