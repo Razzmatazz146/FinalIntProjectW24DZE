@@ -2,6 +2,7 @@ import sys
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
+import json
 from dotenv import load_dotenv
 from matplotlib.patches import Patch
 from pymongo import MongoClient
@@ -103,6 +104,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     year = int(sys.argv[1])
-    countries = sys.argv[2:]
+    countries = json.loads(sys.argv[2])
+    print("Python: ", countries)
 
     generate_sustainable_energy_pie_graph(year, countries)
