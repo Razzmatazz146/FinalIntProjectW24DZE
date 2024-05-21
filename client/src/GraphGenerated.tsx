@@ -27,7 +27,6 @@ const GraphGenerated: React.FC = () => {
                     <img src={graphImage} alt="Fake Graph" className="graph-image-placeholder" />
                 )}
             </div>
-            <p className="data-source">Data source: Your Source Here</p>
             <button className="download-button" onClick={downloadImage}>Download Result</button>
         </div>
     );

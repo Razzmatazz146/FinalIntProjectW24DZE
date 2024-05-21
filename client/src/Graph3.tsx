@@ -6,6 +6,7 @@ const Graph3: React.FC = () => {
   const navigate = useNavigate();
   const [selectedParameter, setSelectedParameter] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const generateGraph = async () => {
     try {
@@ -14,6 +15,8 @@ const Graph3: React.FC = () => {
         return;
       }
 
+      setIsLoading(true);
+
       const response = await fetch('http://localhost:8080/generate-graph', {
         method: 'POST',
         headers: {
@@ -21,9 +24,11 @@ const Graph3: React.FC = () => {
         },
         body: JSON.stringify({
           graphType: 'graph3',
-          parameter: selectedParameter
+          extraParams: selectedParameter
         })
       });
+
+      setIsLoading(false);
 
       if (!response.ok) {
         throw new Error('Failed to generate graph');
@@ -36,6 +41,7 @@ const Graph3: React.FC = () => {
       navigate('/graph-generated');
     } catch (error) {
       console.error('Error generating graph:', error);
+      setIsLoading(false);
     }
   };
 
@@ -61,8 +67,11 @@ const Graph3: React.FC = () => {
           <option value="gdp">GDP</option>
         </select>
       </div>
-      {error && <p className="error-message">{error}</p>} {/* Display error message */}
-      <button className="generate-button" onClick={generateGraph}>Generate Graph</button>
+      {error && <p className="error-message">{error}</p>}
+      <button className="generate-button" onClick={generateGraph} disabled={isLoading}>
+        Generate Graph
+      </button>
+      {isLoading && <p>Loading...</p>}
     </div>
   );
 };

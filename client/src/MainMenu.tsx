@@ -16,6 +16,9 @@ const MainMenu: React.FC = () => {
         <button onClick={handleStartClick}>Start</button>
         <p>Delve into Our World in Data's comprehensive dataset to uncover vital insights into worldwide energy consumption, growth rates, and the evolving energy mix across nations.</p>
       </div>
+      <div className="credits">
+        <p>This project has been made by Zacharie Bujold, William-Denis Pascal-Letourneau, and Edward Chauvette.</p>
+      </div>
     </div>
   );
 };

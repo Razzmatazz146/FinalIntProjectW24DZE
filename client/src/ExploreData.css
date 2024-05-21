@@ -20,39 +20,39 @@ h2 {
 }
 
 .graph1-picture-placeholder {
-    width: 200px;
+    width: 300px;
     height: 200px;
     background-color: #ccc;
     border-radius: 5px;
     margin: 5px auto;
-    background-image: url('./assets/background.jpg');
+    background-image: url('./assets/sample1.png');
 }
 
 .graph2-picture-placeholder {
-    width: 200px;
+    width: 300px;
     height: 200px;
     background-color: #ccc;
     border-radius: 5px;
     margin: 5px auto;
-    background-image: url('./assets/background.jpg');
+    background-image: url('./assets/sample2.png');
 }
 
 .graph3-picture-placeholder {
-    width: 200px;
+    width: 300px;
     height: 200px;
     background-color: #ccc;
     border-radius: 5px;
     margin: 5px auto;
-    background-image: url('./assets/background.jpg');
+    background-image: url('./assets/sample3.png');
 }
 
 .graph4-picture-placeholder {
-    width: 200px;
+    width: 300px;
     height: 200px;
     background-color: #ccc;
     border-radius: 5px;
     margin: 5px auto;
-    background-image: url('./assets/background.jpg');
+    background-image: url('./assets/sample4.png');
 }
 
 button {

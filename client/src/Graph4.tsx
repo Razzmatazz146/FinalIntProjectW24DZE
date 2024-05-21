@@ -4,33 +4,28 @@ import './Graph4.css';
 
 const Graph4: React.FC = () => {
   const navigate = useNavigate();
-  const [selectedCountries, setSelectedCountries] = useState<string[]>(['', '']);
+  const [selectedYear, setSelectedYear] = useState<string>('');
   const [error, setError] = useState<string>('');
-  const [countries, setCountries] = useState<string[]>([]);
+  const [years, setYears] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    fetchCountries();
+    generateYears();
   }, []);
 
-  const fetchCountries = async () => {
-    try {
-      const response = await fetch('http://localhost:8080/countries');
-      if (!response.ok) {
-        throw new Error('Failed to fetch countries');
-      }
-      const data = await response.json();
-      setCountries(data);
-    } catch (error) {
-      console.error('Error fetching countries:', error);
-    }
+  const generateYears = () => {
+    const yearList = Array.from({ length: 35 }, (_, i) => (1990 + i).toString());
+    setYears(yearList);
   };
 
   const generateGraph = async () => {
     try {
-      if (selectedCountries.every(country => country === '')) {
-        setError('Please select at least one country.');
+      if (selectedYear === '') {
+        setError('Please select a year.');
         return;
       }
+
+      setIsLoading(true);
 
       const response = await fetch('http://localhost:8080/generate-graph', {
         method: 'POST',
@@ -39,9 +34,16 @@ const Graph4: React.FC = () => {
         },
         body: JSON.stringify({
           graphType: 'graph4',
-          countries: selectedCountries.filter(country => country !== '')
+          extraParams: selectedYear
         })
       });
+
+      setIsLoading(false);
+
+      if (response.status === 500) {
+        setError('The selected year is not available for the graph.');
+        return;
+      }
 
       if (!response.ok) {
         throw new Error('Failed to generate graph');
@@ -54,6 +56,8 @@ const Graph4: React.FC = () => {
       navigate('/graph-generated');
     } catch (error) {
       console.error('Error generating graph:', error);
+      setIsLoading(false);
+      setError('An unexpected error occurred while generating the graph. Please try again.');
     }
   };
 
@@ -61,13 +65,9 @@ const Graph4: React.FC = () => {
     window.history.back();
   };
 
-  const handleCountryChange = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
-    const selectedCountry = event.target.value;
-    setSelectedCountries(prevSelectedCountries => {
-      const updatedSelectedCountries = [...prevSelectedCountries];
-      updatedSelectedCountries[index] = selectedCountry;
-      return updatedSelectedCountries;
-    });
+  const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedYear = event.target.value;
+    setSelectedYear(selectedYear);
     setError('');
   };
 
@@ -75,19 +75,20 @@ const Graph4: React.FC = () => {
     <div className="graph4">
       <button onClick={goBack} className="back-button">Back</button>
       <h1>Renewable Electricity</h1>
-      {selectedCountries.map((_, index) => (
-        <div key={index} className="input-container">
-          <label htmlFor={`country${index + 1}`}>Select Country {index + 1}:</label>
-          <select id={`country${index + 1}`} name={`country${index + 1}`} value={selectedCountries[index]} onChange={(e) => handleCountryChange(e, index)}>
-            <option value="">Select Country</option>
-            {countries.map(country => (
-              <option key={country} value={country}>{country}</option>
-            ))}
-          </select>
-        </div>
-      ))}
+      <div className="input-container">
+        <label htmlFor="year">Select Year:</label>
+        <select id="year" name="year" value={selectedYear} onChange={handleYearChange}>
+          <option value="">Select Year</option>
+          {years.map(year => (
+            <option key={year} value={year}>{year}</option>
+          ))}
+        </select>
+      </div>
       {error && <p className="error-message">{error}</p>}
-      <button className="generate-button" onClick={generateGraph}>Generate Graph</button>
+      <button className="generate-button" onClick={generateGraph} disabled={isLoading}>
+        Generate Graph
+      </button>
+      {isLoading && <p>Loading...</p>}
     </div>
   );
 };

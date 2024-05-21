@@ -17,3 +17,10 @@
 .background-image h1 {
     color: #fff;
 }
+
+.credits {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.9em;
+    color: #666;
+}

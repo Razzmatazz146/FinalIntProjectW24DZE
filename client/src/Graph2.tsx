@@ -8,6 +8,7 @@ const Graph2: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [countries, setCountries] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const generateYearsArray = () => {
     const currentYear = new Date().getFullYear();
@@ -42,6 +43,8 @@ const Graph2: React.FC = () => {
         return;
       }
 
+      setIsLoading(true);
+
       const response = await fetch('http://localhost:8080/generate-graph', {
         method: 'POST',
         headers: {
@@ -50,11 +53,16 @@ const Graph2: React.FC = () => {
         body: JSON.stringify({
           graphType: 'graph2',
           countries: selectedCountries.filter(country => country !== ''),
-          extraParams: {
-            year: selectedYear
-          }
+          extraParams: selectedYear
         })
       });
+
+      setIsLoading(false);
+
+      if (response.status === 500) {
+        setError('Selected countries are not available for the selected year.');
+        return;
+      }
 
       if (!response.ok) {
         throw new Error('Failed to generate graph');
@@ -67,6 +75,8 @@ const Graph2: React.FC = () => {
       navigate('/graph-generated');
     } catch (error) {
       console.error('Error generating graph:', error);
+      setError('An unexpected error occurred while generating the graph. Please try again.');
+      setIsLoading(false);
     }
   };
 
@@ -114,7 +124,10 @@ const Graph2: React.FC = () => {
         </select>
       </div>
       {error && <p className="error-message">{error}</p>}
-      <button className="generate-button" onClick={generateGraph}>Generate Graph</button>
+      <button className="generate-button" onClick={generateGraph} disabled={isLoading}>
+        Generate Graph
+      </button>
+      {isLoading && <p>Loading...</p>}
     </div>
   );
 };
