@@ -85,7 +85,17 @@ def generate_sustainable_energy_pie_graph(year, countries):
     # Set the main title
     plt.suptitle(f'Sustainable Energy Consumption Distribution by Country ({year})', fontsize=16)
     plt.tight_layout(rect=[0, 0, 1, 0.95])
-    plt.savefig('./images/graph.png')
+    # Get the current directory
+    current_dir = os.getcwd()
+
+    # Create a directory for the images if it doesn't exist
+    images_dir = os.path.join(current_dir, 'images')
+    if not os.path.exists(images_dir):
+        os.makedirs(images_dir)
+
+    # Save the plot image in the images directory
+    image_path = os.path.join(images_dir, 'graph.png')
+    plt.savefig(image_path)
 
 if __name__ == "__main__":
     if len(sys.argv) < 3 or len(sys.argv) > 6:

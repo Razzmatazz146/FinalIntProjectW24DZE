@@ -11,7 +11,7 @@ def generate_fossil_energy_graph(country_name):
     db_name = os.getenv('DB')
     db_url = os.getenv('URL')
     collection_name = os.getenv('COLLECTION')
-    client = MongoClient(db_url, 27017)
+    client = MongoClient(db_url)
     db = client[db_name]
 
     # Load the list of valid countries from the 'countries_list' collection
@@ -51,7 +51,17 @@ def generate_fossil_energy_graph(country_name):
     plt.title(f'Fossil Energy Consumption in {country_name}')
     plt.legend()
     plt.grid(True)
-    plt.savefig('./images/graph.png')
+    # Get the current directory
+    current_dir = os.getcwd()
+
+    # Create a directory for the images if it doesn't exist
+    images_dir = os.path.join(current_dir, 'images')
+    if not os.path.exists(images_dir):
+        os.makedirs(images_dir)
+
+    # Save the plot image in the images directory
+    image_path = os.path.join(images_dir, 'graph.png')
+    plt.savefig(image_path)
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:

@@ -36,19 +36,19 @@ app.post('/generate-graph', async (req, res) => {
     let scriptPath;
     switch (graphType) {
         case 'test':
-            scriptPath = './Scripts/fake_graph.py';
+            scriptPath = path.join('.', 'Scripts', 'fake_graph.py');
             break;
         case 'graph1':
-            scriptPath = './Scripts/generate_fossil_energy_graph.py';
+            scriptPath = path.join('.', 'Scripts', 'generate_fossil_energy_graph.py');
             break;
         case 'graph2':
-            scriptPath = './Scripts/generate_sustainable_energy_pie_graph.py';
+            scriptPath = path.join('.', 'Scripts', 'generate_sustainable_energy_pie_graph.py');
             break;
         case 'graph3':
-            scriptPath = './Scripts/generate_top5_bar_graph.py';
+            scriptPath = path.join('.', 'Scripts', 'generate_top5_bar_graph.py');
             break;
         case 'graph4':
-            scriptPath = './Scripts/generate_electricity_generation_stacked_graph.py';
+            scriptPath = path.join('.', 'Scripts', 'generate_electricity_generation_stacked_graph.py');
             break;
         default:
             return res.status(400).json({ message: 'Invalid graphType' });
@@ -60,9 +60,7 @@ app.post('/generate-graph', async (req, res) => {
         console.log(countries);
         args.push(countries);
     } else if (graphType === 'graph2') {
-        let countriesArr = countries.join(' ')
-        console.log('countriesArr: ', countriesArr);
-        args.push(extraParams, countriesArr);
+        args.push(extraParams, countries);
     } else if (graphType === 'graph3') {
         console.log(extraParams);
         args.push(extraParams);

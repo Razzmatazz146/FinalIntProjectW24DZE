@@ -74,8 +74,17 @@ def generate_electricity_generation_stacked_graph(year):
     # Adjusting layout
     plt.tight_layout(rect=[0, 0, 0.85, 1])
 
-    # Save the plot as a PNG file
-    plt.savefig('./images/graph.png')
+    # Get the current directory
+    current_dir = os.getcwd()
+
+    # Create a directory for the images if it doesn't exist
+    images_dir = os.path.join(current_dir, 'images')
+    if not os.path.exists(images_dir):
+        os.makedirs(images_dir)
+
+    # Save the plot image in the images directory
+    image_path = os.path.join(images_dir, 'graph.png')
+    plt.savefig(image_path)
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
