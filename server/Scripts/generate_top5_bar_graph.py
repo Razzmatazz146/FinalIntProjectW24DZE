@@ -26,8 +26,8 @@ def generate_top5_bar_graph(criteria):
     # Filter data to include only valid countries
     data = data[data['country'].isin(valid_countries)]
 
-    # Filter data for the year 2020
-    data_2020 = data[data['year'] == 2020]
+    # Filter data for the year 2016
+    data_2016 = data[data['year'] == 2016]
 
     # Criteria column mapping
     criteria_column_map = {
@@ -45,10 +45,10 @@ def generate_top5_bar_graph(criteria):
     criteria_column = criteria_column_map[criteria]
 
     # Select relevant columns and drop rows with missing values
-    data_2020 = data_2020[['country', criteria_column]].dropna()
+    data_2016 = data_2016[['country', criteria_column]].dropna()
 
-    if data_2020.empty:
-        print(f"No data available for the criteria '{criteria}' in 2020.")
+    if data_2016.empty:
+        print(f"No data available for the criteria '{criteria}' in 2016.")
         return
 
     # Convert GDP values in scientific notation to regular numbers
@@ -56,13 +56,13 @@ def generate_top5_bar_graph(criteria):
         data[criteria_column] = pd.to_numeric(data[criteria_column], errors='coerce')
 
     # Get the top 5 countries excluding Canada
-    top_5_countries = data_2020[data_2020['country'] != 'Canada'].nlargest(5, criteria_column)['country'].tolist()
+    top_5_countries = data_2016[data_2016['country'] != 'Canada'].nlargest(5, criteria_column)['country'].tolist()
 
     # Include Canada in the list of countries to compare
     countries_to_compare = top_5_countries + ['Canada']
 
-    # Filter data for the past 10 years for the selected countries, stopping at 2020
-    data_past_10_years = data[(data['year'] >= 2011) & (data['year'] <= 2020) & (data['country'].isin(countries_to_compare))]
+    # Filter data for the past 10 years for the selected countries, stopping at 2016
+    data_past_10_years = data[(data['year'] >= 2011) & (data['year'] <= 2016) & (data['country'].isin(countries_to_compare))]
 
     if data_past_10_years.empty:
         print(f"No data available for the selected countries in the past 10 years.")
@@ -71,8 +71,8 @@ def generate_top5_bar_graph(criteria):
     # Pivot data to have countries as columns and years as rows
     pivot_data = data_past_10_years.pivot(index='year', columns='country', values=criteria_column)
 
-    # Sort columns by 2020 values in descending order
-    sorted_columns = pivot_data.loc[2020].sort_values(ascending=False).index.tolist()
+    # Sort columns by 2016 values in descending order
+    sorted_columns = pivot_data.loc[2016].sort_values(ascending=False).index.tolist()
     pivot_data = pivot_data[sorted_columns]
 
     # Plotting
@@ -90,7 +90,7 @@ def generate_top5_bar_graph(criteria):
         ax.bar(positions + i * bar_width, pivot_data[country], width=bar_width, label=country, color=colors[i])
 
     # Highlight the year at which the maximum is identified
-    max_year = 2020
+    max_year = 2016
     max_values = pivot_data.loc[max_year]
     for i, country in enumerate(sorted_columns):
         max_value = max_values[country]
@@ -107,7 +107,7 @@ def generate_top5_bar_graph(criteria):
     else:
         y_label = 'Criteria'
 
-    ax.set_title(f'{criteria.replace("_", " ").title()} Over last 10 Years (Top 5 Countries in 2020 + Canada)', fontsize=16)
+    ax.set_title(f'{criteria.replace("_", " ").title()} Over last 10 Years (Top 5 Countries in 2016 + Canada)', fontsize=16)
     ax.set_xlabel('Year', fontsize=14)
     ax.set_ylabel(y_label, fontsize=14)
     ax.set_xticks(positions + bar_width * (len(sorted_columns) - 1) / 2)
