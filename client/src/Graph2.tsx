@@ -48,7 +48,7 @@ const Graph2: React.FC = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          graphType: 'line',
+          graphType: 'graph2',
           countries: selectedCountries.filter(country => country !== ''),
           extraParams: {
             year: selectedYear
