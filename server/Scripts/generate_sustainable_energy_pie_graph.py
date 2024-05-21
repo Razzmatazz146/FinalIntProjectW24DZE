@@ -93,7 +93,6 @@ if __name__ == "__main__":
         sys.exit(1)
 
     year = int(sys.argv[1])
-    countries_str = sys.argv[2:]
-    countries = countries_str.split(',')
+    countries = sys.argv[2:]
 
     generate_sustainable_energy_pie_graph(year, countries)

@@ -60,7 +60,7 @@ app.post('/generate-graph', async (req, res) => {
         console.log(countries);
         args.push(countries);
     } else if (graphType === 'graph2') {
-        let countriesArr = countries.join(',')
+        let countriesArr = countries.join(' ')
         console.log('countriesArr: ', countriesArr);
         args.push(extraParams, countriesArr);
     } else if (graphType === 'graph3') {
